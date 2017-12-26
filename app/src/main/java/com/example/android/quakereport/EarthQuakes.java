@@ -16,12 +16,14 @@ public class EarthQuakes {
     private String location;
     private long mTime;
     private double mMag;
+    private String murl;
     String[] parts;
 
-    public EarthQuakes(double mag, String location, long time) {
+    public EarthQuakes(double mag, String location, long time,String url) {
         mMag = mag;
         mLocation = location;
         mTime = time;
+        murl = url;
         parts = mLocation.split(",");
         Log.v("msg", parts[0]);
 
@@ -70,5 +72,9 @@ public class EarthQuakes {
             return null;
         }
 
+    }
+    public String geturl()
+    {
+        return murl;
     }
 }
