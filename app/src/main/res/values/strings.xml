@@ -15,4 +15,5 @@
 -->
 <resources>
     <string name="app_name">Quake Report</string>
+    <string name="no_earthquake">No Earthquake found currently</string>
 </resources>
