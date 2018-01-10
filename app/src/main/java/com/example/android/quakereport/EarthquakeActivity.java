@@ -111,6 +111,8 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<List<EarthQuakes>> loader, List<EarthQuakes> data) {
+        View loaingIndicator = findViewById(R.id.loader);
+        loaingIndicator.setVisibility(View.GONE);
         mEmptyStateTextView.setText(R.string.no_earthquake);
         madaptor.clear();
         Log.i("data",String.valueOf(data));

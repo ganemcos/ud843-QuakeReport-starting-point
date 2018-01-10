@@ -1,6 +1,5 @@
 package com.example.android.quakereport;
 
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,6 +35,11 @@ public final class QueryUtils {
 
 
     public static List<EarthQuakes> fletchEarthquakes(String requesturl) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         URL url = createurl(requesturl);
         String jsonResponse = null;
         try {
