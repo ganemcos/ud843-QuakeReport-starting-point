@@ -105,7 +105,8 @@ public final class QueryUtils {
 
     private static String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder output = new StringBuilder();
-        if (inputStream != null) {
+        if (inputStream != null)
+        {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
             BufferedReader reader = new BufferedReader(inputStreamReader);
             String line = reader.readLine();
@@ -123,7 +124,8 @@ public final class QueryUtils {
     /**
      * parsing a JSON response.
      */
-    public static List<EarthQuakes> extractFretuesFromJson(String SAMPLE_JSON_RESPONSE) {
+    public static List<EarthQuakes> extractFretuesFromJson(String SAMPLE_JSON_RESPONSE)
+    {
 
         if (TextUtils.isEmpty(SAMPLE_JSON_RESPONSE))
         {
@@ -131,23 +133,18 @@ public final class QueryUtils {
         }
         // Create an empty ArrayList that we can start adding earthquakes to
         List<EarthQuakes> earthquakes = new ArrayList<>();
-
         // Try to parse the SAMPLE_JSON_RESPONSE. If there's a problem with the way the JSON
         // is formatted, a JSONException exception object will be thrown.
         // Catch the exception so the app doesn't crash, and print the error message to the logs.
         try {
-
             // TODO: Parse the response given by the SAMPLE_JSON_RESPONSE string and
             JSONObject root = new JSONObject(SAMPLE_JSON_RESPONSE);
             Log.v("data", SAMPLE_JSON_RESPONSE);
-
             JSONArray Fetures = root.getJSONArray("features");
-
-            for (int j = 0; j < Fetures.length(); j++) {
+            for (int j = 0; j < Fetures.length(); j++)
+            {
                 JSONObject c = Fetures.getJSONObject(j);
-
                 JSONObject properties = c.getJSONObject("properties");
-
                 double mag = properties.getDouble("mag");
                 long time = properties.getLong("time");
                 String place = properties.getString("place");
@@ -155,16 +152,13 @@ public final class QueryUtils {
                 earthquakes.add(new EarthQuakes(mag, place, time, url));
             }
             // build up a list of Earthquake objects with the corresponding data.
-
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
-
         // Return the list of earthquakes
         return earthquakes;
     }
-
 }

@@ -15,49 +15,53 @@
  */
 package com.example.android.quakereport;
 
+import android.app.LoaderManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
+import android.content.Loader;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity
+        implements LoaderCallbacks<List<EarthQuakes>>{
 
+    private static final  int EARTHQUAKE_LOADER_ID = 1;
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     private static Myadaptor madaptor;
 
     private static final String Usgs_Request_Url =
     "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&orderby=time&minmag=6&limit=10";
 
-    private static class EarthQuakeAsynkTask extends AsyncTask<String,Void,List<EarthQuakes>> {
-
-        @Override
-        protected List<EarthQuakes> doInBackground(String... Urls) {
-
-            if (Urls.length < 1 || Urls == null) {
-                return null;
-            }
-            List<EarthQuakes> result = QueryUtils.fletchEarthquakes(Urls[0]);
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(List<EarthQuakes> data) {
-            madaptor.clear();
-
-            if (data!=null && !data.isEmpty())
-            {
-                madaptor.addAll(data);
-            }
-        }
-    }
+//    private static class EarthQuakeAsynkTask extends AsyncTask<String,Void,List<EarthQuakes>> {
+//
+//        @Override
+//        protected List<EarthQuakes> doInBackground(String... Urls) {
+//
+//            if (Urls.length < 1 || Urls == null) {
+//                return null;
+//            }
+//            List<EarthQuakes> result = QueryUtils.fletchEarthquakes(Urls[0]);
+//            return result;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<EarthQuakes> data) {
+//            madaptor.clear();
+//
+//            if (data!=null && !data.isEmpty())
+//            {
+//                madaptor.addAll(data);
+//            }
+//        }
+//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,23 +76,47 @@ public class EarthquakeActivity extends AppCompatActivity {
         // so the list can be populated in the user interface
         earthquakeListView.setAdapter(madaptor);
 
-        EarthQuakeAsynkTask task = new EarthQuakeAsynkTask();
-        task.execute(Usgs_Request_Url);
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID,null,this);
 
-
-
+//        EarthQuakeAsynkTask task = new EarthQuakeAsynkTask();
+//        task.execute(Usgs_Request_Url);
 
 
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 EarthQuakes currentEarthQuake = (EarthQuakes) madaptor.getItem(position);
+
                 Uri earthquakeuri = Uri.parse(currentEarthQuake.geturl());
+
                 Intent websiteintent = new Intent(Intent.ACTION_VIEW,earthquakeuri);
+
                 startActivity(websiteintent);
             }
         });
 
 
+    }
+
+    @Override
+    public Loader<List<EarthQuakes>> onCreateLoader(int id, Bundle bundle) {
+        return new EarthquakeLoader(this,Usgs_Request_Url);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<EarthQuakes>> loader, List<EarthQuakes> data) {
+        madaptor.clear();
+        Log.i("data",String.valueOf(data));
+        if (data!=null && !data.isEmpty())
+        {
+            madaptor.addAll(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<EarthQuakes>> loader) {
+        madaptor.clear();
     }
 }
